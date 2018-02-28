@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://D://AVLSetV2/AVLSetV2.iml" filepath="D://AVLSetV2/AVLSetV2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AVLSetV2.iml" filepath="$PROJECT_DIR$/AVLSetV2.iml" />
     </modules>
   </component>
 </project>

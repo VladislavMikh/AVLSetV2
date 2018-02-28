@@ -1,10 +1,14 @@
 package AVLSet;
+import javafx.collections.transformation.SortedList;
+
 import java.util.*;
 
 public class AVLSet <T extends Comparable<T>> implements SortedSet<T> {
 
+    // создание экземпляра дерева конструктором
     private Tree<T> tree= new Tree<T>();
 
+    // итератор
     private class TreeIterator implements Iterator<T> {
         T current = null;
         T first = null;
@@ -19,6 +23,7 @@ public class AVLSet <T extends Comparable<T>> implements SortedSet<T> {
             }
         }
 
+        // переопределение стандартных методов интерфейса Iterator: hasNext, next
         @Override
         public boolean hasNext() {
             return (!isEmpty() && !end);
@@ -34,6 +39,7 @@ public class AVLSet <T extends Comparable<T>> implements SortedSet<T> {
         }
     }
 
+    // переопределение стандартных методов интерфейса SortedSet: comparator, subSet, headSet, tailSet, first, last
     @Override
     public Comparator<? super T> comparator() {
         return (Comparator<T>) Comparator.naturalOrder();
@@ -80,6 +86,9 @@ public class AVLSet <T extends Comparable<T>> implements SortedSet<T> {
         return tree.last();
     }
 
+    /* переопределение стандартных методов интерфейса Set: size, isEmpty, contains, containsAll, iterator, toArray, add,
+        addAll, remove, removeAll, retainAll, clear, equals, hashCode
+    */
     @Override
     public int size() {
         return tree.getSize();
@@ -201,14 +210,11 @@ public class AVLSet <T extends Comparable<T>> implements SortedSet<T> {
         if (s.size() != size())
             return false;
 
-        try {
             for (T t : this)
                 if (!s.contains(t))
                     return false;
-        }
-        catch (ClassCastException unused) {
-            return false;
-        }
+
         return true;
     }
+
 }
