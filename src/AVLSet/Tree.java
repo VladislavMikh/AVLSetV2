@@ -12,20 +12,6 @@ public class Tree<T extends Comparable<T>> {
         return size;
     }
 
-   /* public int count(T from, T to, boolean withHigher) {
-        int count = 0;
-        if (contains(root, from)) count++;
-        T current = next(from);
-        if (current == null) return 0;
-        do {
-            current = next(current);
-            count++;
-        }
-        while (current != null && current.compareTo(to) < 0);
-        return count + ((withHigher) ? 1 : 0);
-    }
-    */
-
     // малый левый поворот от указанного узла
     private Node<T> turnLeft(Node<T> n) {
         Node<T> right = n.right;
@@ -62,19 +48,22 @@ public class Tree<T extends Comparable<T>> {
         return n;
     }
 
-    // поиск min эл-та в левом поддереве, если левого поддерева нет, вернуть сам узел
+    /* поиск min эл-та в левом поддереве, если левого поддерева нет, вернуть сам узел
+    используется в nextNode, remove, first
+    */
     private Node<T> minimum(Node<T> n) {
         if (n.left == null) return n;
         else return minimum(n.left);
     }
 
-    // поиск max эл-та в правом поддереве, если правого поддерева нет, вернуть сам узел
+    /* поиск max эл-та в правом поддереве, если правого поддерева нет, вернуть сам узел
+     + используется в last, next, которые в свою очередь используются в итераторе
+    */
     private Node<T> maximum(Node<T> n) {
         if (n.right == null) return n;
         else return maximum(n.right);
     }
-
-    //
+    // поиск следующего узла, используется в next
     private Node<T> nextNode(Node<T> n, Node<T> prev, T key) {
         int comparison = key.compareTo(n.key);
         Node<T> closest = (comparison < 0 && n.key.compareTo(prev.key) < 0) ? n : prev;
@@ -90,21 +79,6 @@ public class Tree<T extends Comparable<T>> {
         return closest;
     }
 
-    private Node<T> prevBefore(Node<T> n, Node<T> prev, T key) {
-        int comparison = key.compareTo(n.key);
-        Node<T> closest = (comparison > 0 && n.key.compareTo(prev.key) > 0) ? n : prev;
-        if (comparison < 0 && n.left != null) {
-            closest = prevBefore(n.left, closest, key);
-        } else if (comparison > 0 && n.right != null) {
-            closest = prevBefore(n.right, closest, key);
-        } else if (comparison == 0) {
-            if (n.left != null) {
-                return maximum(n.left);
-            }
-        }
-        return closest;
-    }
-
     // поиск указанного ключа в поддереве от указанного узла
     private boolean contains(Node<T> n, T key) {
         if (n == null) return false;
@@ -113,6 +87,10 @@ public class Tree<T extends Comparable<T>> {
             return contains(n.left, key);
         }
         else return comparison == 0 || contains(n.right, key);
+    }
+
+    public boolean contains(T key) {
+        return (root != null && contains(root, key));
     }
 
     // вставка узла в дерево по ключу и значению
@@ -139,6 +117,16 @@ public class Tree<T extends Comparable<T>> {
         return balance(n);
     }
 
+    public void insert(T key) {
+        if (root == null){
+            root = new Node<T>(key);
+            size++;
+            wasChanged = true;
+        }
+        else
+            root = insert(root, key);
+    }
+
     // удаление min эл-та
     private Node<T> removeMinimum(Node<T> n) {
         if (n.left == null)
@@ -147,7 +135,7 @@ public class Tree<T extends Comparable<T>> {
         return balance(n);
     }
 
-    // удаление max эл-та,
+    // удаление max эл-та
     private Node<T> remove(Node<T> n, T key) {
         int comparison = key.compareTo(n.key);
         if (comparison < 0 && n.left != null) {
@@ -166,55 +154,36 @@ public class Tree<T extends Comparable<T>> {
         return n;
     }
 
-    // вставка нового ключа
-    public void insert(T key) {
-        if (root == null){
-            root = new Node<T>(key);
-            size++;
-            wasChanged = true;
-        }
-        else
-            root = insert(root, key);
-    }
-
-    public void clear() {
-        root =null;
-        size =0;
-    }
-
     public void remove(T key) {
         root = (root != null) ? remove(root, key) : null;
     }
 
-    public boolean contains(T key) {
-        return (root != null && contains(root, key));
+    public void clear() {
+        root = null;
+        size = 0;
     }
 
-    // поиск левого эл-та
+    // поиск левого эл-та, используется для работы итератора
     public T first() {
         if (root == null) throw new NoSuchElementException();
         return minimum(root).key;
     }
 
-    // поиск последнего эл-та
+    // поиск последнего эл-та, используется для работы итератора
     public T last() {
         if (root == null) throw new NoSuchElementException();
         return maximum(root).key;
     }
-
+    // поиск следующего эл-та, используется для работы итератора
     public T next(T key) {
         if (root == null) return null;
         T next = nextNode(root, maximum(root), key).key;
         return (next.compareTo(key) > 0 ) ? next : null;
     }
 
-    public T prev(T key) {
-        if (root == null) return null;
-        T prev = prevBefore(root, minimum(root), key).key;
-        return (prev.compareTo(key) < 0) ? prev : null;
-    }
-
-    // вспомогательная ф-я. проверяет флаг wasChanged. Если он был, вернет true. иначе false.
+    /* вспомогательная ф-я. проверяет флаг wasChanged. Если он был, вернет true. иначе false.
+    используется в методах add и remove из класса AVLSet, тк они булевские
+    */
     public boolean is_modified() {
         if (wasChanged) {
             wasChanged = false;

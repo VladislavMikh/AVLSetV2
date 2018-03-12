@@ -12,9 +12,6 @@ class BinaryTreeTest {
         val avl = AVLSet<Int>()
         original.addAll(list)
         avl.addAll(list)
-        /*for (element in avl){
-            println(element)
-        } */
         assertEquals(avl, original)
         original.removeAll(listOf(2,6,7))
         avl.removeAll(listOf(2,6,7))
@@ -22,16 +19,16 @@ class BinaryTreeTest {
     }
 
     @Test
-    fun thattest() {
+    fun thatTest() {
         val list1 = listOf(1,3,4,5,6,7,8,9);
-        val list2 = listOf("1");
+        val list2 = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9");
         val avl1 = AVLSet<String>()
         val avl2 = AVLSet<Int>()
         avl1.addAll(list2)
         avl2.addAll(list1)
-        println(avl1.equals(avl2))
-
+        println(avl1==avl2)
     }
+
     @Test
     fun subSet() {
         val list = listOf(1,3,4,5,6,7,8,9)
