@@ -1,5 +1,4 @@
 package AVLSet;
-import javafx.collections.transformation.SortedList;
 
 import java.util.*;
 
@@ -217,4 +216,17 @@ public class AVLSet <T extends Comparable<T>> implements SortedSet<T> {
         return true;
     }
 
+    @Override
+     public int hashCode() {
+
+       int hashCode = 1;
+
+       Iterator i = new TreeIterator();
+        while (i.hasNext()) {
+            Object obj = i.next();
+            hashCode = 31 * hashCode() + ( obj == null ? 0 : obj.hashCode());
+        }
+
+        return hashCode;
+    }
 }
